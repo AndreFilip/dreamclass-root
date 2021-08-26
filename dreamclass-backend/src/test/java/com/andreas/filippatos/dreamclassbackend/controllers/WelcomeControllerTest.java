@@ -1,36 +1,40 @@
 package com.andreas.filippatos.dreamclassbackend.controllers;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = WelcomeController.class)
-class WelcomeControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
+class WelcomeControllerTest extends BaseSpringBootTestController {
 
     @Test
     void getHelloFriend() throws Exception {
-        this.mockMvc.perform(get("/welcome"))
+        mockMvc.perform(get("/welcome"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void getHelloFriend2() throws Exception {
-        this.mockMvc.perform(get("/welcome/inside"))
+    void getHelloFriendInside() throws Exception {
+        mockMvc.perform(get("/welcome/inside"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void getHelloFriend3() throws Exception {
-        this.mockMvc.perform(get("/welcome/inside/Andrew"))
+    void getHelloFriendInsideName() throws Exception {
+        mockMvc.perform(get("/welcome/inside/Andrew"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getHelloFriendInsideNameAuthorizedWithCreds() throws Exception {
+        mockMvc.perform(get("/welcome/inside/Andrew").with(httpBasic("username1", "username1")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getHelloFriendInsideNameUnauthorizedWithCreds() throws Exception {
+        mockMvc.perform(get("/welcome/inside/Andrew").with(httpBasic("username1", "usernameWrongPass")))
                 .andExpect(status().isUnauthorized());
     }
 }

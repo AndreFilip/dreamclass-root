@@ -3,31 +3,21 @@ package com.andreas.filippatos.dreamclassbackend.controllers;
 import com.andreas.filippatos.dreamclassbackend.entities.PublicHoliday;
 import com.andreas.filippatos.dreamclassbackend.services.PublicHolidayService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(value = PublicHolidayController.class
-            //, excludeAutoConfiguration = SecurityAutoConfiguration.class
-            )
-class PublicHolidayControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+//@WebMvcTest(value = PublicHolidayController.class
+//, excludeAutoConfiguration = SecurityAutoConfiguration.class
+//            )
+class PublicHolidayControllerTest extends BaseSpringBootTestController {
 
     @MockBean
     private PublicHolidayService publicHolidayServiceMock;
@@ -40,8 +30,7 @@ class PublicHolidayControllerTest {
 
         when(publicHolidayServiceMock.getAllPublicHolidays()).thenReturn(publicHolidays);
 
-        this.mockMvc.perform(get("/publicHolidays").with(httpBasic("user", "user")))
-                // .andDo(print())
+        mockMvc.perform(get("/publicHolidays").with(httpBasic("username1", "username1")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)))
@@ -52,7 +41,7 @@ class PublicHolidayControllerTest {
 
     @Test
     public void getAllPublicHolidaysUnauthenticatedTest() throws Exception {
-        this.mockMvc.perform(get("/publicHolidays"))
+        mockMvc.perform(get("/publicHolidays"))
                 .andExpect(status().isUnauthorized());
 
     }
