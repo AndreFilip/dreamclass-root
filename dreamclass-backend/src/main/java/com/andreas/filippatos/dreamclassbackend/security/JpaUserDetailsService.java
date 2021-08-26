@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class JpaUserDetails implements UserDetailsService {
+public class JpaUserDetailsService implements UserDetailsService {
 
     @Autowired
     private DreamClassUserRepository dreamClassUserRepository;
